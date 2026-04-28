@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 
-// Zedt had l'Type bach TypeScript w Vercel maybkiwch
+// Types dial TypeScript
 type Message = {
   role: string;
   content: string;
@@ -14,14 +14,13 @@ export default function App() {
   const [userAddress, setUserAddress] = useState('');
   const [loading, setLoading] = useState(false);
   
-  // Chat State m3a l'Type s7i7
+  // Chat State
   const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: "Hello! I am ArcNexus AI. I can swap, bridge, or invest across chains using your Unified Balance. What is your intent today?" }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isProcessingTx, setIsProcessingTx] = useState(false);
   
-  // Zedt HTMLDivElement hna
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll chat
@@ -29,18 +28,45 @@ export default function App() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Wallet Connection
-  const connectWallet = () => {
+  // ==========================================
+  // REAL WEB3 WALLET CONNECTION LOGIC (EIP-1193)
+  // ==========================================
+  const connectWallet = async () => {
     setLoading(true);
-    setTimeout(() => {
-      setUserAddress("0x71C7656EC7ab88b098defB751B7401B5f6d8976F");
-      setWalletConnected(true);
-      setLoading(false);
+    try {
+      // Kan-checkiw wesh l'user m-installi MetaMask awla Rabby f l'Browser
+      if (typeof window !== 'undefined' && (window as any).ethereum) {
+        
+        // Hna katlanci l'Popup dial l'Wallet bsse7 bach l'user y-accepti!
+        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+        
+        if (accounts && accounts.length > 0) {
+          const address = accounts[0];
+          setUserAddress(address);
+          setWalletConnected(true);
+          
+          setMessages(prev => [...prev, { 
+            role: 'system', 
+            content: `Wallet connected securely. Address: ${address.slice(0,6)}...${address.slice(-4)}. Unified Balance active: 3,450 USDC (Arbitrum, Optimism, Solana).` 
+          }]);
+        }
+      } else {
+        // Ila makan m-installi 7ta wallet, kangolouha lih f l'chat
+        setMessages(prev => [...prev, { 
+          role: 'system', 
+          content: '⚠️ Web3 Wallet not found. Please install MetaMask or Rabby to use ArcNexus.' 
+        }]);
+      }
+    } catch (error) {
+      console.error("Wallet connection failed:", error);
+      // Ila l'user sed l'popup w ma-acceptach
       setMessages(prev => [...prev, { 
         role: 'system', 
-        content: 'Wallet connected successfully. Unified Balance active: 3,450 USDC (Arbitrum, Optimism, Solana).' 
+        content: '❌ Wallet connection rejected by user.' 
       }]);
-    }, 1500);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle AI Chat
