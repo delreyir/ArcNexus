@@ -25,7 +25,7 @@ export default function App() {
   
   // Chat & Transactions State
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: "Initialization complete. ArcNexus AI is online. I can route your Unified Balance across any network seamlessly. What is your objective?" }
+    { role: 'assistant', content: "ArcNexus is online. I route your Unified Balance across any network seamlessly using natural language. What is your objective today?" }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isProcessingTx, setIsProcessingTx] = useState(false);
@@ -62,20 +62,20 @@ export default function App() {
           
           setMessages(prev => [...prev, { 
             role: 'system', 
-            content: `Connection established. Address linked: ${address.slice(0,6)}...${address.slice(-4)}. Unified Liquidity detected: 3,450.00 USDC.` 
+            content: `Identity verified. Connected: ${address.slice(0,6)}...${address.slice(-4)}. Unified Balance unlocked: 3,450.00 USDC.` 
           }]);
         }
       } else {
         setMessages(prev => [...prev, { 
           role: 'system', 
-          content: '⚠️ Terminal Error: Web3 Provider not found. Inject a wallet to proceed.' 
+          content: '⚠️ Error: No Web3 provider detected. Please install a wallet.' 
         }]);
       }
     } catch (error) {
       console.error("Wallet connection failed:", error);
       setMessages(prev => [...prev, { 
         role: 'system', 
-        content: '❌ Access denied. Wallet connection rejected.' 
+        content: '❌ Connection aborted by user.' 
       }]);
     } finally {
       setLoading(false);
@@ -106,7 +106,7 @@ export default function App() {
 
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: `Intent parsed successfully. \n\nAction: Execute Cross-Chain Operation\nLiquidity Source: Unified USDC Pool\nGas Abstraction: Arc Paymaster (Zero Cost)\n\nAwaiting your cryptographic signature.`,
+        content: `Intent constructed. \n\nTarget: Cross-Chain Execution\nSource: Unified USDC Balance\nGas Fee: $0.00 (Sponsored)\n\nAwaiting your signature.`,
         type: 'action_proposal'
       }]);
     }, 2000);
@@ -114,7 +114,7 @@ export default function App() {
 
   const executeUnifiedTransaction = () => {
     setIsProcessingTx(true);
-    setMessages(prev => [...prev, { role: 'system', content: 'Initiating Arc App Kit routing protocols...' }]);
+    setMessages(prev => [...prev, { role: 'system', content: 'Broadcasting intent via Arc App Kit...' }]);
 
     setTimeout(() => {
       setIsProcessingTx(false);
@@ -129,50 +129,49 @@ export default function App() {
 
       setMessages(prev => [...prev, { 
         role: 'success', 
-        content: 'Operation Successful. Intent executed across networks. (TxHash: 0x8a9...4b2)' 
+        content: 'Execution Complete. Intent settled across chains. (TxHash: 0x8a9...4b2)' 
       }]);
     }, 3500);
   };
 
   return (
-    <div className="min-h-screen bg-[#020617] text-slate-300 font-sans selection:bg-cyan-500/30 overflow-x-hidden custom-scrollbar relative">
+    <div className="min-h-screen bg-[#000000] text-[#f4f4f5] font-sans selection:bg-[#00df9a]/30 overflow-x-hidden custom-scrollbar relative">
       
-      {/* Modern Grid Background */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none z-0"></div>
-      
-      {/* Glowing Orbs */}
-      <div className="fixed top-[-10%] left-[20%] w-[500px] h-[500px] bg-cyan-600/20 rounded-full blur-[120px] pointer-events-none z-0"></div>
-      <div className="fixed bottom-[-10%] right-[-5%] w-[400px] h-[400px] bg-indigo-600/20 rounded-full blur-[100px] pointer-events-none z-0"></div>
+      {/* Background Noise/Texture (Subtle) */}
+      <div className="fixed inset-0 opacity-[0.02] mix-blend-screen pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
 
-      {/* Floating Pill Navbar (Creative Redesign) */}
-      <nav className="fixed top-6 left-0 right-0 z-50 mx-auto max-w-6xl px-4 transition-all duration-300">
-        <div className="bg-slate-900/60 backdrop-blur-xl border border-white/10 rounded-full flex items-center justify-between p-2 shadow-2xl shadow-cyan-900/10">
+      {/* Top Navbar (CoderCrest Style) */}
+      <nav className="fixed top-0 w-full z-50 bg-[#000000]/80 backdrop-blur-md border-b border-[#222222]">
+        <div className="max-w-[1400px] mx-auto px-6 h-[72px] flex items-center justify-between">
           
-          <div className="flex items-center gap-3 pl-4">
-            <div className="relative flex items-center justify-center w-8 h-8">
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-indigo-500 rounded-full blur opacity-50"></div>
-              <div className="relative w-full h-full bg-slate-950 rounded-full border border-white/20 flex items-center justify-center text-cyan-400 font-black text-sm">
-                X
-              </div>
+          {/* Left Side: Logo & Main Links */}
+          <div className="flex items-center gap-10">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <span className="text-white font-medium text-xl tracking-tight">ArcNexus</span>
+              <div className="w-2.5 h-2.5 bg-[#00df9a] rounded-sm"></div>
             </div>
-            <span className="text-white font-bold tracking-wide text-lg">Arc<span className="text-cyan-400 font-light">Nexus</span></span>
+            
+            {/* Nav Links */}
+            <div className="hidden lg:flex items-center gap-8 text-[13px] font-medium text-[#888888]">
+              <a href="#features" className="hover:text-white transition-colors">Features</a>
+              <a href="#console" className="hover:text-white transition-colors">NanoAI</a>
+              <a href="https://docs.arc.network/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Architecture</a>
+              <a href="https://faucet.circle.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Faucet</a>
+            </div>
           </div>
           
-          <div className="flex items-center gap-3 pr-2">
-            <div className="hidden lg:flex items-center gap-6 mr-4 text-xs font-semibold tracking-wider text-slate-400">
-              <a href="#features" className="hover:text-cyan-400 transition-colors">Features</a>
-              <a href="#console" className="hover:text-cyan-400 transition-colors">AI Console</a>
-            </div>
-
+          {/* Right Side: Actions */}
+          <div className="flex items-center gap-6">
+            
             {walletConnected && (
               <button 
                 onClick={() => setShowQueue(!showQueue)}
-                className="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/50 hover:bg-slate-800 border border-white/5 text-xs font-medium text-slate-300 transition-all relative"
+                className="hidden md:flex items-center gap-2 text-[13px] font-medium text-[#888888] hover:text-white transition-colors"
               >
-                <svg className="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                Active Intents
+                Intent Queue
                 {txQueue.filter(tx => tx.status === 'pending').length > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-cyan-500 text-[9px] font-bold text-slate-950 shadow-[0_0_10px_rgba(6,182,212,0.5)]">
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-[#00df9a] text-[9px] font-bold text-black">
                     {txQueue.filter(tx => tx.status === 'pending').length}
                   </span>
                 )}
@@ -180,239 +179,244 @@ export default function App() {
             )}
 
             {walletConnected && balance && (
-              <div className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500/10 to-indigo-500/10 border border-cyan-500/20 rounded-full text-xs font-bold text-cyan-400">
-                <span>{balance}</span>
-                <span className="text-slate-400 font-normal">USDC</span>
+              <div className="hidden sm:flex items-center gap-1 text-[13px] font-mono text-[#888888]">
+                <span className="text-white">{balance}</span> USDC
               </div>
             )}
 
             <button 
               onClick={connectWallet}
               disabled={loading || walletConnected}
-              className={`px-6 py-2 rounded-full font-bold transition-all text-xs flex items-center gap-2 ${
+              className={`px-5 py-2 rounded-md font-semibold transition-all text-[13px] flex items-center gap-2 ${
                 walletConnected 
-                ? 'bg-slate-800 border border-emerald-500/30 text-emerald-400' 
-                : 'bg-gradient-to-r from-cyan-500 to-indigo-500 text-white hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] hover:scale-105'
+                ? 'bg-[#111111] border border-[#333333] text-white hover:bg-[#1a1a1a]' 
+                : 'bg-[#00df9a] text-black hover:bg-[#00c285]'
               }`}
             >
-              {walletConnected && <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"></div>}
-              {loading ? 'Authenticating...' : walletConnected ? `${userAddress.slice(0,6)}...${userAddress.slice(-4)}` : 'Connect Core'}
+              {walletConnected && <div className="w-1.5 h-1.5 rounded-full bg-[#00df9a] shadow-[0_0_8px_rgba(0,223,154,0.8)]"></div>}
+              {loading ? 'Authenticating...' : walletConnected ? `${userAddress.slice(0,6)}...${userAddress.slice(-4)}` : 'Connect Wallet'}
             </button>
           </div>
         </div>
       </nav>
 
-      {/* Main Layout */}
-      <div className="max-w-7xl mx-auto pt-40 pb-20 px-6 flex flex-col xl:flex-row gap-12 relative z-10">
+      {/* Hero Section (The Massive Text Style) */}
+      <div className="relative pt-[180px] pb-[100px] px-6 z-10 flex flex-col items-center justify-center min-h-[80vh]">
         
-        {/* Center/Left - Hero Content (Creative Layout) */}
-        <div className={`flex-1 flex flex-col justify-center transition-all duration-500 ${showQueue ? 'xl:pr-[350px]' : ''}`}>
-          
-          <div className="text-center xl:text-left mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] uppercase tracking-[0.2em] font-bold text-cyan-400 mb-6">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
-              Powered by Arc Network
+        <div className="text-center w-full max-w-[1000px] mx-auto">
+          <h1 className="text-[12vw] sm:text-[9vw] md:text-[7vw] lg:text-[100px] font-medium tracking-[-0.04em] leading-[1.05] mx-auto flex flex-col items-center">
+            <span className="text-[#666666]">The future</span>
+            <span className="text-[#666666]">of decentralized finance</span>
+            <div className="flex items-center justify-center gap-2 md:gap-4 text-white mt-1 flex-wrap">
+              <span className="text-[#888888] font-light">is</span>
+              
+              {/* Fingerprint Icon */}
+              <div className="text-[#00df9a]">
+                <svg className="w-[8vw] h-[8vw] max-w-[70px] max-h-[70px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
+                  <path d="M12 8v4"/>
+                  <path d="M12 16h.01"/>
+                  <path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/>
+                  <path d="M6 12c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
+                </svg>
+              </div>
+              
+              <span>intents</span>
+              <span className="text-[#888888] font-light">+</span>
+              
+              {/* Sparkle Icon */}
+              <div className="text-cyan-400">
+                <svg className="w-[7vw] h-[7vw] max-w-[60px] max-h-[60px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M12 3L14.5 9.5L21 12L14.5 14.5L12 21L9.5 14.5L3 12L9.5 9.5L12 3Z" fill="currentColor"/>
+                </svg>
+              </div>
+              
+              <span>AI</span>
             </div>
-            
-            <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6 leading-[1.1]">
-              <span className="text-slate-100">DeFi executed by</span><br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-500">Pure Intents.</span>
-            </h1>
-            
-            <p className="text-base text-slate-400 max-w-2xl mx-auto xl:mx-0 leading-relaxed">
-              No more bridging. No more gas tokens. ArcNexus AI abstracts the complexity of Web3. Command cross-chain operations using your <span className="text-cyan-400 font-semibold">Unified Balance</span> through natural language.
-            </p>
+          </h1>
+          
+          <p className="text-[#888888] text-[15px] md:text-[17px] max-w-[600px] mx-auto mt-10 mb-10 leading-relaxed font-light">
+            We help you abstract away bridges, route liquidity instantly using Unified Balances, and execute gasless transactions to thrive in a cross-chain world.
+          </p>
+
+          <a href="#console" className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-[#000000] border border-[#00df9a]/40 text-white font-medium text-[15px] shadow-[0_0_20px_rgba(0,223,154,0.15)] hover:shadow-[0_0_30px_rgba(0,223,154,0.3)] hover:border-[#00df9a]/70 transition-all duration-300 group">
+            Launch NanoAI
+            <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+          </a>
+        </div>
+      </div>
+
+      {/* Main App Section (Chat + Queue) */}
+      <div id="console" className="max-w-[1200px] mx-auto px-6 pb-32 flex flex-col xl:flex-row gap-8 relative z-10">
+        
+        {/* Chat Console (Brutalist/Clean Style) */}
+        <div className="flex-1 bg-[#050505] border border-[#222222] rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[600px] relative">
+          
+          {/* Console Header */}
+          <div className="bg-[#0a0a0a] border-b border-[#222222] p-4 flex items-center justify-between z-10">
+             <div className="flex items-center gap-3">
+                <div className="flex gap-1.5 ml-1">
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#333333]"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#333333]"></div>
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#00df9a]"></div>
+                </div>
+                <span className="text-[13px] font-medium text-white tracking-wide ml-2">NanoAI Console</span>
+             </div>
+             <div className="text-[11px] text-[#666666] font-mono tracking-widest uppercase">Arc-MCP-v2.0</div>
           </div>
 
-          {/* Floating Chat Console (The Core Feature) */}
-          <div id="console" className="w-full max-w-4xl mx-auto xl:mx-0 bg-slate-900/50 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-[0_0_50px_-15px_rgba(6,182,212,0.15)] relative">
-            
-            {/* Console Header */}
-            <div className="bg-slate-950/80 p-3 flex items-center justify-between border-b border-white/5">
-               <div className="flex items-center gap-4">
-                  <div className="flex gap-1.5 ml-2">
-                    <div className="w-3 h-3 rounded-full bg-slate-700"></div>
-                    <div className="w-3 h-3 rounded-full bg-slate-700"></div>
-                    <div className="w-3 h-3 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.8)]"></div>
-                  </div>
-                  <span className="text-[11px] font-mono text-slate-400 uppercase tracking-widest">Nexus Terminal v2.0</span>
-               </div>
-               <div className="flex items-center gap-2 px-2 py-0.5 rounded bg-white/5 border border-white/10">
-                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                 <span className="text-[9px] font-bold text-emerald-500 uppercase">System Online</span>
-               </div>
-            </div>
-
-            {/* Messages Area */}
-            <div className="flex-1 overflow-y-auto p-6 h-[400px] flex flex-col gap-6 custom-scrollbar bg-gradient-to-b from-transparent to-slate-950/50">
-              {messages.map((msg, idx) => (
-                <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col gap-6 custom-scrollbar bg-[#000000]">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                
+                <div className={`max-w-[90%] md:max-w-[80%] p-5 rounded-2xl ${
+                  msg.role === 'user' 
+                    ? 'bg-[#111111] border border-[#222222] text-white rounded-br-sm' 
+                    : msg.role === 'system'
+                    ? 'bg-transparent border border-[#222222] text-[#888888] text-[12px] font-mono rounded-md'
+                    : msg.role === 'success'
+                    ? 'bg-[#00df9a]/10 border border-[#00df9a]/30 text-[#00df9a] text-[14px] rounded-bl-sm'
+                    : 'bg-[#0a0a0a] border border-[#222222] text-[#e5e5e5] rounded-bl-sm shadow-lg'
+                }`}>
                   
-                  <div className={`max-w-[90%] md:max-w-[80%] p-4 rounded-2xl ${
-                    msg.role === 'user' 
-                      ? 'bg-gradient-to-br from-cyan-600 to-indigo-600 text-white rounded-br-sm shadow-lg' 
-                      : msg.role === 'system'
-                      ? 'bg-slate-800/50 border border-slate-700 text-slate-400 text-[11px] font-mono rounded-md'
-                      : msg.role === 'success'
-                      ? 'bg-emerald-950/50 border border-emerald-500/30 text-emerald-400 text-sm rounded-bl-sm'
-                      : 'bg-slate-800/80 border border-slate-700 text-slate-200 rounded-bl-sm shadow-md'
-                  }`}>
-                    
-                    {msg.role === 'assistant' && (
-                      <div className="flex items-center gap-2 mb-3 border-b border-slate-700/50 pb-2">
-                        <span className="text-[10px] font-black text-cyan-400 uppercase tracking-widest">ArcNexus Agent</span>
+                  {msg.role === 'assistant' && (
+                    <div className="flex items-center gap-2 mb-4 pb-3 border-b border-[#222222]">
+                      <div className="w-5 h-5 bg-[#00df9a] rounded-sm flex items-center justify-center text-[10px] font-black text-black">N</div>
+                      <span className="text-[11px] font-bold text-[#00df9a] uppercase tracking-widest">NanoAI</span>
+                    </div>
+                  )}
+
+                  <p className="leading-relaxed whitespace-pre-wrap text-[15px] font-light">{msg.content}</p>
+
+                  {msg.type === 'action_proposal' && (
+                    <div className="mt-6 p-5 bg-[#050505] rounded-xl border border-[#333333]">
+                      <div className="flex justify-between items-center text-[13px] mb-3">
+                        <span className="text-[#888888]">Routing Method:</span>
+                        <span className="font-mono text-white bg-[#111111] border border-[#222222] px-2 py-1 rounded">Unified Balance</span>
                       </div>
-                    )}
-
-                    <p className="leading-relaxed whitespace-pre-wrap text-sm">{msg.content}</p>
-
-                    {msg.type === 'action_proposal' && (
-                      <div className="mt-5 p-4 bg-slate-950 rounded-xl border border-cyan-500/20 shadow-inner">
-                        <div className="flex justify-between items-center text-xs mb-3">
-                          <span className="text-slate-500 flex items-center gap-2">
-                            <svg className="w-4 h-4 text-cyan-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
-                            Routing Protocol
-                          </span>
-                          <span className="font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">App Kit Unified</span>
-                        </div>
-                        <div className="flex justify-between items-center text-xs mb-5">
-                          <span className="text-slate-500 flex items-center gap-2">
-                            <svg className="w-4 h-4 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                            Gas Estimate
-                          </span>
-                          <span className="font-mono font-bold text-emerald-400">0.00 USDC</span>
-                        </div>
-                        
-                        <button 
-                          onClick={executeUnifiedTransaction}
-                          disabled={isProcessingTx || txQueue[0]?.status === 'completed'}
-                          className={`w-full py-3 rounded-lg font-bold text-xs transition-all flex justify-center items-center gap-2 ${
-                            txQueue[0]?.status === 'completed' 
-                            ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' 
-                            : 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 shadow-[0_0_15px_rgba(6,182,212,0.4)]'
-                          } disabled:opacity-70`}
-                        >
-                          {isProcessingTx ? (
-                            <span className="animate-pulse flex items-center gap-2">
-                              <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                              </svg>
-                              Processing Signature...
-                            </span>
-                          ) : txQueue[0]?.status === 'completed' ? (
-                            <>Execution Finalized ✓</>
-                          ) : (
-                            <>Authorize Execution</>
-                          )}
-                        </button>
+                      <div className="flex justify-between items-center text-[13px] mb-6">
+                        <span className="text-[#888888]">Arc Paymaster (Gas):</span>
+                        <span className="font-mono font-medium text-[#00df9a]">0.00 USDC</span>
                       </div>
-                    )}
-                  </div>
+                      
+                      <button 
+                        onClick={executeUnifiedTransaction}
+                        disabled={isProcessingTx || txQueue[0]?.status === 'completed'}
+                        className={`w-full py-3.5 rounded-lg font-semibold text-[13px] transition-all flex justify-center items-center gap-2 ${
+                          txQueue[0]?.status === 'completed' 
+                          ? 'bg-[#111111] text-[#00df9a] border border-[#00df9a]/30' 
+                          : 'bg-[#ffffff] hover:bg-[#e5e5e5] text-black'
+                        } disabled:opacity-50`}
+                      >
+                        {isProcessingTx ? (
+                          <span className="animate-pulse flex items-center gap-2">Processing intent...</span>
+                        ) : txQueue[0]?.status === 'completed' ? (
+                          <>Execution Finalized ✓</>
+                        ) : (
+                          <>Sign & Execute</>
+                        )}
+                      </button>
+                    </div>
+                  )}
                 </div>
-              ))}
-              {loading && (
-                <div className="flex justify-start">
-                  <div className="bg-slate-800/80 border border-slate-700 rounded-lg p-4 flex gap-2 items-center shadow-md">
-                    <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce"></span>
-                    <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
-                    <span className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
-                  </div>
+              </div>
+            ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="bg-[#0a0a0a] border border-[#222222] rounded-lg p-5 flex gap-2 items-center">
+                  <span className="w-2 h-2 bg-[#00df9a] rounded-full animate-bounce"></span>
+                  <span className="w-2 h-2 bg-[#00df9a] rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
+                  <span className="w-2 h-2 bg-[#00df9a] rounded-full animate-bounce" style={{ animationDelay: '0.4s' }}></span>
                 </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
+              </div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
 
-            {/* Input Area */}
-            <div className="p-4 bg-slate-950/80 border-t border-white/5 relative z-10">
-              
-              {walletConnected && messages.length <= 2 && (
-                <div className="flex gap-2 overflow-x-auto custom-scrollbar pb-3">
-                  {suggestions.map((sug, i) => (
-                    <button 
-                      key={i}
-                      onClick={() => handleSendMessage(undefined, sug)}
-                      className="whitespace-nowrap px-4 py-2 bg-slate-800/50 hover:bg-cyan-500/10 border border-slate-700 hover:border-cyan-500/30 rounded-lg text-xs text-slate-300 transition-all shadow-sm"
-                    >
-                      {sug}
-                    </button>
-                  ))}
-                </div>
-              )}
+          {/* Input Area */}
+          <div className="p-5 bg-[#050505] border-t border-[#222222] relative z-10">
+            
+            {walletConnected && messages.length <= 2 && (
+              <div className="flex gap-2 overflow-x-auto custom-scrollbar pb-4">
+                {suggestions.map((sug, i) => (
+                  <button 
+                    key={i}
+                    onClick={() => handleSendMessage(undefined, sug)}
+                    className="whitespace-nowrap px-4 py-2 bg-[#111111] hover:bg-[#1a1a1a] border border-[#333333] rounded-full text-[12px] text-[#aaaaaa] hover:text-white transition-all"
+                  >
+                    {sug}
+                  </button>
+                ))}
+              </div>
+            )}
 
-              {!walletConnected ? (
-                <div className="bg-slate-900/50 border border-slate-800 text-slate-500 p-4 rounded-xl text-center text-xs font-mono flex items-center justify-center gap-3">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
-                  Authentication required to broadcast intents.
+            {!walletConnected ? (
+              <div className="bg-[#111111] border border-[#333333] text-[#888888] p-4 rounded-xl text-center text-[13px] flex items-center justify-center gap-3">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
+                Connect your wallet to start interacting with NanoAI.
+              </div>
+            ) : (
+              <form onSubmit={(e) => handleSendMessage(e)} className="relative">
+                <div className="relative flex items-center bg-[#0a0a0a] border border-[#333333] rounded-xl overflow-hidden focus-within:border-[#00df9a]/50 transition-all">
+                  <input 
+                    type="text" 
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Enter natural language intent..." 
+                    className="flex-1 bg-transparent border-none text-white px-5 py-4 focus:outline-none placeholder-[#555555] text-[15px] font-light"
+                  />
+                  <button 
+                    type="submit"
+                    disabled={!inputValue.trim()}
+                    className="bg-[#00df9a] text-black px-5 py-2 mr-2 rounded-lg text-[13px] font-bold hover:bg-[#00c285] transition-colors disabled:opacity-50 disabled:bg-[#222222] disabled:text-[#555555] flex items-center gap-2"
+                  >
+                    SEND <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                  </button>
                 </div>
-              ) : (
-                <form onSubmit={(e) => handleSendMessage(e)} className="relative">
-                  <div className="relative flex items-center bg-slate-900 border border-slate-700 rounded-xl overflow-hidden focus-within:border-cyan-500/50 focus-within:shadow-[0_0_20px_rgba(6,182,212,0.1)] transition-all">
-                    <input 
-                      type="text" 
-                      value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      placeholder="Enter operational intent (e.g., 'Stake 500 USDC on Optimism')..." 
-                      className="flex-1 bg-transparent border-none text-white px-5 py-4 focus:outline-none placeholder-slate-600 text-sm"
-                    />
-                    <button 
-                      type="submit"
-                      disabled={!inputValue.trim()}
-                      className="bg-cyan-500 text-slate-950 px-5 py-2 mr-2 rounded-lg text-xs font-bold hover:bg-cyan-400 transition-colors disabled:opacity-50 disabled:bg-slate-800 disabled:text-slate-500 flex items-center gap-2"
-                    >
-                      EXECUTE <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                    </button>
-                  </div>
-                </form>
-              )}
-            </div>
+              </form>
+            )}
           </div>
         </div>
 
-        {/* Right Side - Floating Holographic Queue */}
+        {/* Right Side - Intent Queue Sidebar */}
         {showQueue && (
-          <div className="hidden xl:block w-[320px] fixed right-8 top-32 bottom-8 bg-slate-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 shadow-[0_0_40px_-10px_rgba(0,0,0,0.5)] overflow-y-auto custom-scrollbar z-40 animate-in slide-in-from-right-8">
+          <div className="w-full xl:w-[350px] bg-[#050505] border border-[#222222] rounded-2xl p-6 shadow-2xl overflow-y-auto custom-scrollbar xl:h-[600px]">
             <div className="flex items-center justify-between mb-8">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
-                  <svg className="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 10h16M4 14h16M4 18h16" /></svg>
-                </div>
-                <h3 className="text-sm font-bold text-white tracking-wide">
-                  Active Registry
-                </h3>
-              </div>
-              <button onClick={() => setShowQueue(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-800/50 text-slate-400 hover:text-white hover:bg-slate-700 transition-colors">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              <h3 className="text-[14px] font-medium text-white tracking-wide flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-[#00df9a]"></div>
+                Active Registry
+              </h3>
+              <button onClick={() => setShowQueue(false)} className="text-[#666666] hover:text-white transition-colors xl:hidden">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
               </button>
             </div>
 
             {txQueue.length === 0 ? (
-              <div className="flex flex-col items-center justify-center h-40 text-center border-2 border-dashed border-slate-800 rounded-xl">
-                <svg className="w-8 h-8 text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 12H4" /></svg>
-                <span className="text-xs text-slate-500 font-medium">Registry is empty</span>
+              <div className="flex flex-col items-center justify-center h-40 text-center border border-dashed border-[#333333] rounded-xl bg-[#0a0a0a]">
+                <span className="text-[13px] text-[#666666] font-light">Registry is empty</span>
               </div>
             ) : (
               <div className="flex flex-col gap-4">
                 {txQueue.map((tx, i) => (
-                  <div key={i} className="bg-slate-800/40 border border-slate-700/50 rounded-xl p-4 hover:border-indigo-500/30 transition-colors relative overflow-hidden group">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-cyan-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                  <div key={i} className="bg-[#0a0a0a] border border-[#222222] rounded-xl p-5 hover:border-[#333333] transition-colors relative overflow-hidden">
                     
                     <div className="flex justify-between items-center mb-3">
-                      <span className="text-[10px] font-mono font-bold bg-slate-900 px-2 py-1 rounded text-cyan-400">{tx.id}</span>
-                      <span className="text-[10px] text-slate-500 font-medium">{tx.time}</span>
+                      <span className="text-[11px] font-mono font-medium text-[#888888]">{tx.id}</span>
+                      <span className="text-[11px] text-[#555555]">{tx.time}</span>
                     </div>
                     
-                    <p className="text-sm text-slate-200 mb-4 font-medium leading-snug">{tx.description}</p>
+                    <p className="text-[14px] text-[#e5e5e5] mb-5 font-light leading-snug">{tx.description}</p>
                     
                     <div className="flex items-center">
                       {tx.status === 'pending' ? (
-                        <div className="flex items-center gap-2 px-2.5 py-1 bg-amber-500/10 border border-amber-500/20 rounded-md text-[10px] text-amber-400 font-bold uppercase tracking-wider w-full justify-center">
-                          <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#111111] border border-[#333333] rounded-md text-[11px] text-[#888888] font-medium w-full justify-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-[#00df9a] animate-pulse"></span>
                           Awaiting Signature
                         </div>
                       ) : (
-                        <div className="flex items-center gap-2 px-2.5 py-1 bg-emerald-500/10 border border-emerald-500/20 rounded-md text-[10px] text-emerald-400 font-bold uppercase tracking-wider w-full justify-center">
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#00df9a]/10 border border-[#00df9a]/20 rounded-md text-[11px] text-[#00df9a] font-medium w-full justify-center">
+                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
                           Network Confirmed
                         </div>
                       )}
@@ -425,44 +429,37 @@ export default function App() {
         )}
       </div>
 
-      {/* Futuristic Feature Cards */}
-      <section id="features" className="py-24 px-6 relative z-10 border-t border-slate-800/50 bg-slate-950/50">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">Underlying Architecture</h2>
-            <p className="text-sm text-slate-400 max-w-xl mx-auto">Powered by the cutting-edge Arc App Kit, delivering a gasless, chain-abstracted experience.</p>
+      {/* Feature Sections (Brutalist List Style) */}
+      <section id="features" className="py-24 px-6 border-t border-[#222222] bg-[#050505]">
+        <div className="max-w-[1000px] mx-auto">
+          <div className="mb-16 md:mb-24">
+            <h2 className="text-3xl md:text-5xl font-medium text-white mb-6 tracking-tight">System Capabilities.</h2>
+            <p className="text-[16px] text-[#888888] max-w-2xl font-light leading-relaxed">Powered by the cutting-edge Arc App Kit, delivering a gasless, chain-abstracted experience directly through conversation.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="flex flex-col gap-4">
             {[
               {
-                title: "Unified Balances",
-                icon: "M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
-                desc: "USDC liquidity is aggregated instantly across all integrated networks. Eradicating the need for manual bridges.",
-                color: "from-cyan-500 to-blue-500"
+                title: "Unified Sourcing",
+                desc: "USDC liquidity is aggregated instantly across all integrated networks. Eradicating the need for manual bridges."
               },
               {
-                title: "Paymaster Sponsored",
-                icon: "M13 10V3L4 14h7v7l9-11h-7z",
-                desc: "Gas fees are completely abstracted. Execute transactions without ever holding native tokens like ETH or SOL.",
-                color: "from-indigo-500 to-purple-500"
+                title: "Arc Paymaster",
+                desc: "Gas fees are completely abstracted. Execute transactions without ever holding native tokens like ETH or SOL."
               },
               {
-                title: "MCP Integration",
-                icon: "M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z",
-                desc: "Model Context Protocol translates natural language straight into secure, verifiable smart contract calls.",
-                color: "from-fuchsia-500 to-pink-500"
+                title: "Intent Execution",
+                desc: "Model Context Protocol translates natural language straight into secure, verifiable smart contract calls."
               }
             ].map((feat, i) => (
-              <div key={i} className="group relative bg-slate-900 border border-slate-800 rounded-2xl p-8 hover:bg-slate-800/80 transition-all duration-300 overflow-hidden">
-                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${feat.color} opacity-5 blur-[50px] group-hover:opacity-20 transition-opacity`}></div>
-                
-                <div className="w-12 h-12 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-center text-slate-300 mb-6 group-hover:scale-110 transition-transform shadow-lg">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={feat.icon} /></svg>
+              <div key={i} className="flex flex-col md:flex-row md:items-center gap-6 md:gap-12 p-8 bg-[#000000] border border-[#222222] rounded-xl hover:bg-[#0a0a0a] transition-colors group">
+                <div className="text-[#00df9a] font-mono text-[14px]">0{i+1}</div>
+                <div className="w-full md:w-1/3">
+                  <h3 className="text-xl font-medium text-white tracking-tight">{feat.title}</h3>
                 </div>
-                
-                <h3 className="text-lg font-bold text-slate-200 mb-3">{feat.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed">{feat.desc}</p>
+                <div className="w-full md:w-2/3">
+                  <p className="text-[#888888] text-[15px] font-light leading-relaxed group-hover:text-[#aaaaaa] transition-colors">{feat.desc}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -470,29 +467,29 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-slate-800 bg-slate-950 py-10 px-6 relative z-10">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-slate-500 text-xs font-medium">
+      <footer className="border-t border-[#222222] bg-[#000000] py-12 px-6">
+        <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-[#666666] text-[13px] font-medium">
           
           <div className="flex items-center gap-3">
-            <div className="w-6 h-6 rounded-md bg-gradient-to-br from-cyan-500 to-indigo-500 flex items-center justify-center font-bold text-white text-[10px]">X</div>
-            <span className="text-slate-300 font-bold">ArcNexus AI</span>
-            <span className="hidden md:inline-block ml-4 text-slate-600">Built for the Global Web3 Hackathon</span>
+            <div className="w-5 h-5 bg-[#00df9a] rounded-sm"></div>
+            <span className="text-white font-medium text-base tracking-tight">ArcNexus</span>
+            <span className="hidden md:inline-block ml-4 text-[#555555] font-light">© 2026. Global Web3 Hackathon.</span>
           </div>
 
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-cyan-400 transition-colors">Documentation</a>
-            <a href="#" className="hover:text-cyan-400 transition-colors">GitHub Repository</a>
-            <a href="#" className="hover:text-cyan-400 transition-colors">Arc Faucet</a>
+          <div className="flex gap-8">
+            <a href="#" className="hover:text-white transition-colors">Documentation</a>
+            <a href="#" className="hover:text-white transition-colors">Repository</a>
+            <a href="#" className="hover:text-white transition-colors">Arc Faucet</a>
           </div>
         </div>
       </footer>
       
       {/* Scrollbar styling */}
       <style dangerouslySetInnerHTML={{__html: `
-        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(6, 182, 212, 0.2); border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(6, 182, 212, 0.5); }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #333333; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #555555; }
         html { scroll-behavior: smooth; }
       `}} />
     </div>
