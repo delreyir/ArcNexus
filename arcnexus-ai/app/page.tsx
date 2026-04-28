@@ -396,7 +396,6 @@ export default function App() {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
 
           <div className="p-5 bg-[#050505] border-t border-[#222222] relative z-10">
