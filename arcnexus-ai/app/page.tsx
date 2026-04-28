@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import { createPublicClient, createWalletClient, custom, parseEther, http } from 'viem';
 
 // Types dial TypeScript
 type Message = {
@@ -76,7 +77,7 @@ export default function App() {
   };
 
   // ==========================================
-  // REAL WEB3 WALLET & NETWORK CONNECTION (100% REAL)
+  // REAL WEB3 WALLET & NETWORK CONNECTION
   // ==========================================
   const connectWallet = async () => {
     setLoading(true);
@@ -170,7 +171,7 @@ export default function App() {
   };
 
   // ==========================================
-  // REAL ON-CHAIN TRANSACTION EXECUTION
+  // REAL ON-CHAIN TRANSACTION EXECUTION 
   // ==========================================
   const executeUnifiedTransaction = async () => {
     if (!walletConnected || !userAddress) return;
@@ -181,12 +182,14 @@ export default function App() {
     try {
       const eth = (window as any).ethereum;
       
-      // Real Transaction (Self-transfer 0 ARC for demo)
+      // Hna ghadi n-siftou 0.0001 ARC l'rassna (Self-transfer) bach nbiyenouha f l'Explorer!
+      const valueInWei = (0.0001 * 1e18).toString(16); // Convert 0.0001 ARC to Hex
+      
       const transactionParameters = {
-        to: userAddress,
+        to: userAddress, // Self-transfer
         from: userAddress,
-        value: '0x0',
-        data: '0x4172634e6578757320496e74656e74204578656375746564',
+        value: `0x${valueInWei}`, // Send 0.0001 ARC
+        data: '0x4172634e6578757320496e74656e74204578656375746564', // Hex for "ArcNexus Intent Executed"
       };
 
       const txHash = await eth.request({
@@ -194,9 +197,7 @@ export default function App() {
         params: [transactionParameters],
       });
 
-      // Fetch Balance again to show it's "Real" (updates after tx)
-      await fetchRealBalance(userAddress);
-
+      // Update Queue with TxHash
       setTxQueue(prev => prev.map((tx, idx) => 
         idx === 0 ? { ...tx, status: 'completed', txHash: txHash } : tx
       ));
@@ -205,6 +206,12 @@ export default function App() {
         role: 'success', 
         content: `Execution Complete! Your intent is now live on the Arc Testnet.\n\nTxHash: ${txHash.slice(0,10)}...${txHash.slice(-8)}` 
       }]);
+
+      // Wait 3 seconds then fetch balance again to show the update
+      setTimeout(async () => {
+        await fetchRealBalance(userAddress);
+        setMessages(prev => [...prev, { role: 'system', content: 'Balance updated post-execution.' }]);
+      }, 3000);
 
     } catch (error: any) {
       console.error("Transaction failed:", error);
