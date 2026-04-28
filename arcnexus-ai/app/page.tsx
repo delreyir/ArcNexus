@@ -12,8 +12,18 @@ type Message = {
 type IntentTx = {
   id: string;
   description: string;
-  status: 'pending' | 'completed';
+  status: 'pending' | 'completed' | 'failed';
   time: string;
+  txHash?: string;
+};
+
+// Arc Testnet Configuration (Chain ID: 5042002)
+const ARC_TESTNET_CONFIG = {
+  chainId: '0x4ce94a', // 5042002 in Hex
+  chainName: 'Arc Testnet',
+  nativeCurrency: { name: 'ARC', symbol: 'ARC', decimals: 18 },
+  rpcUrls: ['https://testnet.rpc.arc.network'], // Replace with official RPC if different
+  blockExplorerUrls: ['https://explorer.arc.network']
 };
 
 export default function App() {
@@ -46,43 +56,72 @@ export default function App() {
   }, [messages]);
 
   // ==========================================
-  // REAL WEB3 WALLET CONNECTION LOGIC (EIP-1193)
+  // REAL WEB3 WALLET & NETWORK CONNECTION
   // ==========================================
   const connectWallet = async () => {
     setLoading(true);
     try {
       if (typeof window !== 'undefined' && (window as any).ethereum) {
-        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+        const eth = (window as any).ethereum;
         
-        if (accounts && accounts.length > 0) {
-          const address = accounts[0];
-          setUserAddress(address);
-          setWalletConnected(true);
-          setBalance("3,450.00"); // Simulated Unified Balance
-          
-          setMessages(prev => [...prev, { 
-            role: 'system', 
-            content: `Identity verified. Connected: ${address.slice(0,6)}...${address.slice(-4)}. Unified Balance unlocked: 3,450.00 USDC.` 
-          }]);
+        // 1. Request Wallet Connection
+        const accounts = await eth.request({ method: 'eth_requestAccounts' });
+        const address = accounts[0];
+        
+        // 2. Switch to Arc Testnet Automatically
+        try {
+          await eth.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: ARC_TESTNET_CONFIG.chainId }],
+          });
+        } catch (switchError: any) {
+          // If the network is not added to MetaMask, add it
+          if (switchError.code === 4902) {
+            await eth.request({
+              method: 'wallet_addEthereumChain',
+              params: [ARC_TESTNET_CONFIG],
+            });
+          } else {
+            throw switchError;
+          }
         }
+
+        // 3. Fetch REAL Balance from Arc Testnet
+        const balanceHex = await eth.request({
+          method: 'eth_getBalance',
+          params: [address, 'latest']
+        });
+        
+        // Convert Hex balance to Decimal (Wei to ETH/ARC format)
+        const realBalance = (parseInt(balanceHex, 16) / 1e18).toFixed(4);
+
+        setUserAddress(address);
+        setWalletConnected(true);
+        setBalance(realBalance);
+        
+        setMessages(prev => [...prev, { 
+          role: 'system', 
+          content: `Identity verified. Connected: ${address.slice(0,6)}...${address.slice(-4)}. Network: Arc Testnet. Native Balance: ${realBalance} ARC.` 
+        }]);
+        
       } else {
         setMessages(prev => [...prev, { 
           role: 'system', 
-          content: '⚠️ Error: No Web3 provider detected. Please install a wallet.' 
+          content: '⚠️ Error: No Web3 provider detected. Please install MetaMask.' 
         }]);
       }
     } catch (error) {
       console.error("Wallet connection failed:", error);
       setMessages(prev => [...prev, { 
         role: 'system', 
-        content: '❌ Connection aborted by user.' 
+        content: '❌ Connection aborted by user or network error.' 
       }]);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle AI Chat
+  // Handle AI Chat Input (Simulates AI parsing the intent)
   const handleSendMessage = (e?: React.FormEvent, customMsg?: string) => {
     if (e) e.preventDefault();
     const msgToSend = customMsg || inputValue;
@@ -106,32 +145,63 @@ export default function App() {
 
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: `Intent constructed. \n\nTarget: Cross-Chain Execution\nSource: Unified USDC Balance\nGas Fee: $0.00 (Sponsored)\n\nAwaiting your signature.`,
+        content: `Intent constructed. \n\nTarget: Cross-Chain Execution via Arc\nAction: Execute on-chain\nGas Fee: $0.00 (Abstracted)\n\nAwaiting your Web3 signature.`,
         type: 'action_proposal'
       }]);
-    }, 2000);
+    }, 1500);
   };
 
-  const executeUnifiedTransaction = () => {
+  // ==========================================
+  // REAL ON-CHAIN TRANSACTION EXECUTION
+  // ==========================================
+  const executeUnifiedTransaction = async () => {
+    if (!walletConnected || !userAddress) return;
+    
     setIsProcessingTx(true);
-    setMessages(prev => [...prev, { role: 'system', content: 'Broadcasting intent via Arc App Kit...' }]);
+    setMessages(prev => [...prev, { role: 'system', content: 'Awaiting signature in MetaMask...' }]);
 
-    setTimeout(() => {
-      setIsProcessingTx(false);
+    try {
+      const eth = (window as any).ethereum;
       
-      // Update queue to completed
-      setTxQueue(prev => prev.map((tx, idx) => 
-        idx === 0 ? { ...tx, status: 'completed' } : tx
-      ));
+      // We send a 0-value transaction to ourselves just to prove on-chain capability for the Hackathon Demo
+      // In production, this would call your specific Smart Contract
+      const transactionParameters = {
+        to: userAddress, // Self-transfer for demo purposes
+        from: userAddress,
+        value: '0x0', // 0 amount
+        data: '0x4172634e6578757320496e74656e74204578656375746564', // Hex for "ArcNexus Intent Executed"
+      };
 
-      // Deduct fake balance for realism
-      setBalance("1,450.00");
+      // Prompt MetaMask to Sign & Send the Transaction
+      const txHash = await eth.request({
+        method: 'eth_sendTransaction',
+        params: [transactionParameters],
+      });
+
+      // Transaction Successful!
+      setTxQueue(prev => prev.map((tx, idx) => 
+        idx === 0 ? { ...tx, status: 'completed', txHash: txHash } : tx
+      ));
 
       setMessages(prev => [...prev, { 
         role: 'success', 
-        content: 'Execution Complete. Intent settled across chains. (TxHash: 0x8a9...4b2)' 
+        content: `Execution Complete! Real Intent settled on Arc Testnet.\n\nTxHash: ${txHash.slice(0,10)}...${txHash.slice(-8)}` 
       }]);
-    }, 3500);
+
+    } catch (error: any) {
+      console.error("Transaction failed:", error);
+      
+      setTxQueue(prev => prev.map((tx, idx) => 
+        idx === 0 ? { ...tx, status: 'failed' } : tx
+      ));
+
+      setMessages(prev => [...prev, { 
+        role: 'system', 
+        content: `❌ Transaction failed or rejected by user. Error: ${error.message || 'Unknown'}` 
+      }]);
+    } finally {
+      setIsProcessingTx(false);
+    }
   };
 
   return (
@@ -180,7 +250,7 @@ export default function App() {
 
             {walletConnected && balance && (
               <div className="hidden sm:flex items-center gap-1 text-[13px] font-mono text-[#888888]">
-                <span className="text-white">{balance}</span> USDC
+                <span className="text-white">{balance}</span> ARC
               </div>
             )}
 
@@ -295,11 +365,11 @@ export default function App() {
                     <div className="mt-6 p-5 bg-[#050505] rounded-xl border border-[#333333]">
                       <div className="flex justify-between items-center text-[13px] mb-3">
                         <span className="text-[#888888]">Routing Method:</span>
-                        <span className="font-mono text-white bg-[#111111] border border-[#222222] px-2 py-1 rounded">Unified Balance</span>
+                        <span className="font-mono text-white bg-[#111111] border border-[#222222] px-2 py-1 rounded">On-Chain Tx</span>
                       </div>
                       <div className="flex justify-between items-center text-[13px] mb-6">
                         <span className="text-[#888888]">Arc Paymaster (Gas):</span>
-                        <span className="font-mono font-medium text-[#00df9a]">0.00 USDC</span>
+                        <span className="font-mono font-medium text-[#00df9a]">0.00 ARC</span>
                       </div>
                       
                       <button 
@@ -312,7 +382,7 @@ export default function App() {
                         } disabled:opacity-50`}
                       >
                         {isProcessingTx ? (
-                          <span className="animate-pulse flex items-center gap-2">Processing intent...</span>
+                          <span className="animate-pulse flex items-center gap-2">Processing via MetaMask...</span>
                         ) : txQueue[0]?.status === 'completed' ? (
                           <>Execution Finalized ✓</>
                         ) : (
@@ -410,17 +480,35 @@ export default function App() {
                     
                     <p className="text-[14px] text-[#e5e5e5] mb-5 font-light leading-snug">{tx.description}</p>
                     
-                    <div className="flex items-center">
-                      {tx.status === 'pending' ? (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#111111] border border-[#333333] rounded-md text-[11px] text-[#888888] font-medium w-full justify-center">
-                          <span className="w-1.5 h-1.5 rounded-full bg-[#00df9a] animate-pulse"></span>
-                          Awaiting Signature
-                        </div>
-                      ) : (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-[#00df9a]/10 border border-[#00df9a]/20 rounded-md text-[11px] text-[#00df9a] font-medium w-full justify-center">
-                          <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
-                          Network Confirmed
-                        </div>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center">
+                        {tx.status === 'pending' ? (
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#111111] border border-[#333333] rounded-md text-[11px] text-[#888888] font-medium w-full justify-center">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#00df9a] animate-pulse"></span>
+                            Awaiting Signature
+                          </div>
+                        ) : tx.status === 'failed' ? (
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-red-900/10 border border-red-900/30 rounded-md text-[11px] text-red-500 font-medium w-full justify-center">
+                            <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                            Transaction Failed
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2 px-3 py-1.5 bg-[#00df9a]/10 border border-[#00df9a]/20 rounded-md text-[11px] text-[#00df9a] font-medium w-full justify-center">
+                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" /></svg>
+                            Network Confirmed
+                          </div>
+                        )}
+                      </div>
+                      
+                      {tx.txHash && (
+                        <a 
+                          href={`https://explorer.arc.network/tx/${tx.txHash}`} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[10px] text-[#888888] hover:text-[#00df9a] flex items-center justify-center gap-1 transition-colors mt-1"
+                        >
+                          View on Arc Explorer ↗
+                        </a>
                       )}
                     </div>
                   </div>
