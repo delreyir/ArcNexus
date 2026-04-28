@@ -52,7 +52,7 @@ export default function App() {
     "Stake 1000 USDC on Arbitrum"
   ];
 
-  // 🚨 FIX 1: Auto-scroll ghir l'wst l'chat bo7do
+  // 🚨 FIX 1: Auto-scroll ghir l'wst l'chat bo7do (Msa7na scrollIntoView li kan kayjerr l'website kaml)
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({
@@ -98,25 +98,29 @@ export default function App() {
         setUserAddress(address);
         setWalletConnected(true);
         
-        let networkSwitched = false;
+        // 🚨 FIX 2: N-checkiw l'Network b parseInt bach may-hmlch l'7rouf kbar wla sghar
+        const currentChainId = await eth.request({ method: 'eth_chainId' });
+        let networkSwitched = parseInt(currentChainId, 16) === parseInt(ARC_TESTNET_CONFIG.chainId, 16);
 
-        // 2. Try to Switch to Arc Testnet
-        try {
-          await eth.request({
-            method: 'wallet_switchEthereumChain',
-            params: [{ chainId: ARC_TESTNET_CONFIG.chainId }],
-          });
-          networkSwitched = true;
-        } catch (switchError: any) {
-          if (switchError.code === 4902) {
-            try {
-              await eth.request({
-                method: 'wallet_addEthereumChain',
-                params: [ARC_TESTNET_CONFIG],
-              });
-              networkSwitched = true;
-            } catch (addError) {
-              console.warn("User rejected adding network.");
+        // 2. Try to Switch to Arc Testnet ila makanch deja fih
+        if (!networkSwitched) {
+          try {
+            await eth.request({
+              method: 'wallet_switchEthereumChain',
+              params: [{ chainId: ARC_TESTNET_CONFIG.chainId }],
+            });
+            networkSwitched = true;
+          } catch (switchError: any) {
+            if (switchError.code === 4902) {
+              try {
+                await eth.request({
+                  method: 'wallet_addEthereumChain',
+                  params: [ARC_TESTNET_CONFIG],
+                });
+                networkSwitched = true;
+              } catch (addError) {
+                console.warn("User rejected adding network.");
+              }
             }
           }
         }
@@ -188,8 +192,11 @@ export default function App() {
     try {
       const eth = (window as any).ethereum;
 
+      // 🚨 FIX 2: N-9raw l'Network ID b parseInt bach ntfadaw mochkil dial Upper/Lower case f Rabby
       const currentChainId = await eth.request({ method: 'eth_chainId' });
-      if (currentChainId !== ARC_TESTNET_CONFIG.chainId) {
+      const isCorrectChain = parseInt(currentChainId, 16) === parseInt(ARC_TESTNET_CONFIG.chainId, 16);
+
+      if (!isCorrectChain) {
         try {
           await eth.request({
             method: 'wallet_switchEthereumChain',
@@ -209,7 +216,6 @@ export default function App() {
       
       const valueInWei = (0.0001 * 1e18).toString(16); 
       
-      // 🚨 FIX 2: 7iydt 'chainId' mn parameters 7it Rabby/MetaMask kiy-rejctiha b3d lmrrat
       const transactionParameters = {
         to: userAddress, // Self-transfer
         from: userAddress,
@@ -243,7 +249,6 @@ export default function App() {
       setTxQueue(prev => prev.map((tx, idx) => 
         idx === 0 ? { ...tx, status: 'failed' } : tx
       ));
-      // 🚨 FIX 2: N-beynou l'error dbsse7 f l'chat bach n3erfou l'mochkil
       const errorMsg = error?.message || 'Transaction rejected or failed.';
       setMessages(prev => [...prev, { role: 'system', content: `❌ ${errorMsg}` }]);
     } finally {
@@ -343,7 +348,6 @@ export default function App() {
              <div className="text-[11px] text-[#666666] font-mono tracking-widest uppercase">Arc-MCP-v2.0</div>
           </div>
 
-          {/* 🚨 FIX 1: Zedt ref={chatContainerRef} hna */}
           <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col gap-6 custom-scrollbar bg-[#000000]">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
@@ -375,7 +379,7 @@ export default function App() {
                           txQueue[0]?.status === 'completed' ? 'bg-[#111111] text-[#00df9a] border border-[#00df9a]/30' : 'bg-[#ffffff] hover:bg-[#e5e5e5] text-black'
                         } disabled:opacity-50`}
                       >
-                        {isProcessingTx ? <span className="animate-pulse">Processing via MetaMask...</span> : 
+                        {isProcessingTx ? <span className="animate-pulse">Processing via Wallet...</span> : 
                          txQueue[0]?.status === 'completed' ? <>Execution Finalized ✓</> : <>Sign & Execute</>}
                       </button>
                     </div>
