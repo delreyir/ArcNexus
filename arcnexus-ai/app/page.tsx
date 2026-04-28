@@ -1,17 +1,28 @@
+'use client';
+
 import React, { useState, useRef, useEffect } from 'react';
+
+// Zedt had l'Type bach TypeScript w Vercel maybkiwch
+type Message = {
+  role: string;
+  content: string;
+  type?: string;
+};
 
 export default function App() {
   const [walletConnected, setWalletConnected] = useState(false);
   const [userAddress, setUserAddress] = useState('');
   const [loading, setLoading] = useState(false);
   
-  // Chat State
-  const [messages, setMessages] = useState([
+  // Chat State m3a l'Type s7i7
+  const [messages, setMessages] = useState<Message[]>([
     { role: 'assistant', content: "Hello! I am ArcNexus AI. I can swap, bridge, or invest across chains using your Unified Balance. What is your intent today?" }
   ]);
   const [inputValue, setInputValue] = useState('');
   const [isProcessingTx, setIsProcessingTx] = useState(false);
-  const messagesEndRef = useRef(null);
+  
+  // Zedt HTMLDivElement hna
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll chat
   useEffect(() => {
@@ -33,7 +44,7 @@ export default function App() {
   };
 
   // Handle AI Chat
-  const handleSendMessage = (e) => {
+  const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() || !walletConnected) return;
 
@@ -344,7 +355,7 @@ export default function App() {
               </div>
               
               {/* Live Arc Testnet Badge - Footer */}
-              <div className="flex items-center gap-2 px-2.5 py-1 bg-white/5 border border-white/10 rounded-full">
+              <div className="flex items-center gap-2 px-2.5 py-1 bg-white/5 border border-white/10 rounded-full cursor-default">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#00ff00] shadow-[0_0_8px_rgba(0,255,0,0.8)]"></div>
                 <span className="text-[10px] text-gray-400 font-medium">Live on Arc testnet</span>
               </div>
@@ -355,8 +366,8 @@ export default function App() {
           <div className="flex gap-5">
             <a href="https://docs.arc.network/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">Arc Docs</a>
             <a href="https://faucet.circle.com/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">USDC Faucet</a>
-            <a href="#" className="hover:text-gray-300 transition-colors">Twitter</a>
-            <a href="#" className="hover:text-gray-300 transition-colors">GitHub</a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">Twitter</a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">GitHub</a>
           </div>
         </div>
       </footer>
