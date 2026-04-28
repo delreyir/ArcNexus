@@ -42,7 +42,7 @@ export default function App() {
   const [isProcessingTx, setIsProcessingTx] = useState(false);
   const [txQueue, setTxQueue] = useState<IntentTx[]>([]);
   
-  // 🚨 FIX 1: L'Ref jdid li ghadi y-scrolli ghir l'Chat w ykheli l'website tabet
+  // L'Ref li ghadi y-scrolli ghir l'Chat w ykheli l'website tabet
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Quick prompt suggestions
@@ -52,7 +52,7 @@ export default function App() {
     "Stake 1000 USDC on Arbitrum"
   ];
 
-  // 🚨 FIX 1: Auto-scroll ghir l'wst l'chat bo7do (Msa7na scrollIntoView li kan kayjerr l'website kaml)
+  // Auto-scroll ghir l'wst l'chat bo7do
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({
@@ -98,7 +98,7 @@ export default function App() {
         setUserAddress(address);
         setWalletConnected(true);
         
-        // 🚨 FIX: N-checkiw l'Network b Number() bach ntfadaw l'mochkil m3a Rabby Wallet
+        // N-checkiw l'Network b Number() bach ntfadaw l'mochkil m3a Rabby Wallet
         const currentChainId = await eth.request({ method: 'eth_chainId' });
         let networkSwitched = Number(currentChainId) === 5042002;
 
@@ -130,20 +130,20 @@ export default function App() {
         
         setMessages(prev => [...prev, { 
           role: 'system', 
-          content: `Idɛntiti dɔn kɔnfam. Kɔnɛktɛd: ${address.slice(0,6)}...${address.slice(-4)}.\nNɛtwɔk: ${networkSwitched ? 'Arc Testnet' : 'Connected (Switch to Arc for best experience)'}\nTru Balans: ${realBalance} ARC de hia.` 
+          content: `Identity verified. Connected: ${address.slice(0,6)}...${address.slice(-4)}.\nNetwork: ${networkSwitched ? 'Arc Testnet' : 'Connected (Switch to Arc for best experience)'}\nReal Balance: ${realBalance} ARC detected.` 
         }]);
         
       } else {
         setMessages(prev => [...prev, { 
           role: 'system', 
-          content: '⚠️ Ɛrɔ: Nɔ Web3 provayda. Duya instɔl MetaMask.' 
+          content: '⚠️ Error: No Web3 provider detected. Please install MetaMask.' 
         }]);
       }
     } catch (error: any) {
-      console.error("Wɔlɛt kɔnɛkshɔn nɔ wɔk:", error);
-      let errorMsg = '❌ Kɔnɛkshɔn dɔn abɔt.';
+      console.error("Wallet connection failed:", error);
+      let errorMsg = '❌ Connection aborted.';
       if (error.code === -32002) {
-        errorMsg = '⚠️ Kɔnɛkshɔn rikwest de na MetaMask ɔrɛdi!';
+        errorMsg = '⚠️ Connection request already pending in MetaMask!';
       }
       setMessages(prev => [...prev, { role: 'system', content: errorMsg }]);
     } finally {
@@ -174,7 +174,7 @@ export default function App() {
 
       setMessages(prev => [...prev, { 
         role: 'assistant', 
-        content: `Intɛnt dɔn rɛdi. \n\nTargɛt: Krɔs-Chen Ɛksikyushɔn bay Arc\nAkshɔn: Du am on-chain\nGas Fi: $0.00 (Spɔnsɔd)\n\nWe de wet fɔ yu Web3 signechɔ fɔ brɔdkast dis intɛnt.`,
+        content: `Intent constructed. \n\nTarget: Cross-Chain Execution via Arc\nAction: Execute on-chain\nGas Fee: $0.00 (Sponsored)\n\nAwaiting your Web3 signature to broadcast this intent.`,
         type: 'action_proposal'
       }]);
     }, 1200);
@@ -192,7 +192,7 @@ export default function App() {
     try {
       const eth = (window as any).ethereum;
 
-      // 🚨 FIX: N-9raw l'Network ID b Number() bach y9bel l'format dial Rabby w MetaMask b jouj
+      // N-9raw l'Network ID b Number() bach y9bel l'format dial Rabby w MetaMask b jouj
       const currentChainId = await eth.request({ method: 'eth_chainId' });
       const isCorrectChain = Number(currentChainId) === 5042002;
 
@@ -209,7 +209,7 @@ export default function App() {
               params: [ARC_TESTNET_CONFIG],
             });
           } else {
-            throw new Error("Duya swich to Arc Testnet fɔ sain dis transakshɔn.");
+            throw new Error("Please switch to Arc Testnet to sign this transaction.");
           }
         }
       }
@@ -235,21 +235,21 @@ export default function App() {
 
       setMessages(prev => [...prev, { 
         role: 'success', 
-        content: `I dɔn dɔn! Yu intɛnt de layv naw na di Arc Testnet.\n\nTxHash: ${txHash.slice(0,10)}...${txHash.slice(-8)}` 
+        content: `Execution Complete! Your intent is now live on the Arc Testnet.\n\nTxHash: ${txHash.slice(0,10)}...${txHash.slice(-8)}` 
       }]);
 
       // Wait 3 seconds then fetch balance again to show the update
       setTimeout(async () => {
         await fetchRealBalance(userAddress);
-        setMessages(prev => [...prev, { role: 'system', content: 'Balans dɔn ɔpdet afta transakshɔn.' }]);
+        setMessages(prev => [...prev, { role: 'system', content: 'Balance updated post-execution.' }]);
       }, 3000);
 
     } catch (error: any) {
-      console.error("Transakshɔn nɔ wɔk:", error);
+      console.error("Transaction failed:", error);
       setTxQueue(prev => prev.map((tx, idx) => 
         idx === 0 ? { ...tx, status: 'failed' } : tx
       ));
-      const errorMsg = error?.message || 'Transakshɔn nɔ gree ɔ i nɔ wɔk.';
+      const errorMsg = error?.message || 'Transaction rejected or failed.';
       setMessages(prev => [...prev, { role: 'system', content: `❌ ${errorMsg}` }]);
     } finally {
       setIsProcessingTx(false);
@@ -396,6 +396,7 @@ export default function App() {
                 </div>
               </div>
             )}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="p-5 bg-[#050505] border-t border-[#222222] relative z-10">
