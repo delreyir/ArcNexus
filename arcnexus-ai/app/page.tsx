@@ -177,19 +177,41 @@ export default function App() {
     if (!walletConnected || !userAddress) return;
     
     setIsProcessingTx(true);
-    setMessages(prev => [...prev, { role: 'system', content: 'Awaiting signature in MetaMask...' }]);
+    setMessages(prev => [...prev, { role: 'system', content: 'Verifying network and awaiting signature...' }]);
 
     try {
       const eth = (window as any).ethereum;
+
+      // 🚨 NEW: FORCE ARC TESTNET BEFORE TRANSACTION 🚨
+      // Hadchi li ghadi ymne3 Rabby Wallet w MetaMask y-siftouk l'Ethereum Mainnet!
+      const currentChainId = await eth.request({ method: 'eth_chainId' });
+      if (currentChainId !== ARC_TESTNET_CONFIG.chainId) {
+        try {
+          await eth.request({
+            method: 'wallet_switchEthereumChain',
+            params: [{ chainId: ARC_TESTNET_CONFIG.chainId }],
+          });
+        } catch (switchError: any) {
+          if (switchError.code === 4902) {
+            await eth.request({
+              method: 'wallet_addEthereumChain',
+              params: [ARC_TESTNET_CONFIG],
+            });
+          } else {
+            throw new Error("Please switch to Arc Testnet to sign this transaction.");
+          }
+        }
+      }
       
-      // Hna ghadi n-siftou 0.0001 ARC l'rassna (Self-transfer) bach nbiyenouha f l'Explorer!
-      const valueInWei = (0.0001 * 1e18).toString(16); // Convert 0.0001 ARC to Hex
+      // Hna ghadi n-siftou 0.0001 ARC l'rassna (Self-transfer)
+      const valueInWei = (0.0001 * 1e18).toString(16); 
       
       const transactionParameters = {
         to: userAddress, // Self-transfer
         from: userAddress,
         value: `0x${valueInWei}`, // Send 0.0001 ARC
-        data: '0x4172634e6578757320496e74656e74204578656375746564', // Hex for "ArcNexus Intent Executed"
+        data: '0x4172634e6578757320496e74656e74204578656375746564', // "ArcNexus Intent Executed"
+        chainId: ARC_TESTNET_CONFIG.chainId // 🚨 NEW: Force Chain ID f l'params
       };
 
       const txHash = await eth.request({
