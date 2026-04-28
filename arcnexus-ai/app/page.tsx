@@ -42,7 +42,8 @@ export default function App() {
   const [isProcessingTx, setIsProcessingTx] = useState(false);
   const [txQueue, setTxQueue] = useState<IntentTx[]>([]);
   
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  // 🚨 FIX 1: L'Ref jdid li ghadi y-scrolli ghir l'Chat w ykheli l'website tabet
+  const chatContainerRef = useRef<HTMLDivElement>(null);
 
   // Quick prompt suggestions
   const suggestions = [
@@ -51,9 +52,14 @@ export default function App() {
     "Stake 1000 USDC on Arbitrum"
   ];
 
-  // Auto-scroll chat
+  // 🚨 FIX 1: Auto-scroll ghir l'wst l'chat bo7do
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [messages]);
 
   // Function bach n-updatiw l'Balance l'7a9i9ia mn l'Blockchain
@@ -182,8 +188,6 @@ export default function App() {
     try {
       const eth = (window as any).ethereum;
 
-      // 🚨 NEW: FORCE ARC TESTNET BEFORE TRANSACTION 🚨
-      // Hadchi li ghadi ymne3 Rabby Wallet w MetaMask y-siftouk l'Ethereum Mainnet!
       const currentChainId = await eth.request({ method: 'eth_chainId' });
       if (currentChainId !== ARC_TESTNET_CONFIG.chainId) {
         try {
@@ -203,15 +207,14 @@ export default function App() {
         }
       }
       
-      // Hna ghadi n-siftou 0.0001 ARC l'rassna (Self-transfer)
       const valueInWei = (0.0001 * 1e18).toString(16); 
       
+      // 🚨 FIX 2: 7iydt 'chainId' mn parameters 7it Rabby/MetaMask kiy-rejctiha b3d lmrrat
       const transactionParameters = {
         to: userAddress, // Self-transfer
         from: userAddress,
         value: `0x${valueInWei}`, // Send 0.0001 ARC
         data: '0x4172634e6578757320496e74656e74204578656375746564', // "ArcNexus Intent Executed"
-        chainId: ARC_TESTNET_CONFIG.chainId // 🚨 NEW: Force Chain ID f l'params
       };
 
       const txHash = await eth.request({
@@ -240,7 +243,9 @@ export default function App() {
       setTxQueue(prev => prev.map((tx, idx) => 
         idx === 0 ? { ...tx, status: 'failed' } : tx
       ));
-      setMessages(prev => [...prev, { role: 'system', content: `❌ Transaction rejected or failed.` }]);
+      // 🚨 FIX 2: N-beynou l'error dbsse7 f l'chat bach n3erfou l'mochkil
+      const errorMsg = error?.message || 'Transaction rejected or failed.';
+      setMessages(prev => [...prev, { role: 'system', content: `❌ ${errorMsg}` }]);
     } finally {
       setIsProcessingTx(false);
     }
@@ -338,7 +343,8 @@ export default function App() {
              <div className="text-[11px] text-[#666666] font-mono tracking-widest uppercase">Arc-MCP-v2.0</div>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col gap-6 custom-scrollbar bg-[#000000]">
+          {/* 🚨 FIX 1: Zedt ref={chatContainerRef} hna */}
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto p-6 md:p-8 flex flex-col gap-6 custom-scrollbar bg-[#000000]">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[90%] md:max-w-[80%] p-5 rounded-2xl ${
@@ -386,7 +392,6 @@ export default function App() {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
           </div>
 
           <div className="p-5 bg-[#050505] border-t border-[#222222] relative z-10">
