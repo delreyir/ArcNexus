@@ -476,10 +476,19 @@ export default function App() {
             <span className="hidden md:inline-block ml-4 text-[#555555] font-light">© 2026. Global Web3 Hackathon.</span>
           </div>
 
-          <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Documentation</a>
-            <a href="#" className="hover:text-white transition-colors">Repository</a>
-            <a href="#" className="hover:text-white transition-colors">Arc Faucet</a>
+          <div className="flex gap-4 sm:gap-6 items-center flex-wrap">
+            {/* Arc Testnet Badge */}
+            <div className="flex items-center gap-2 px-3 py-1.5 border border-[#222222] rounded-full text-[11px] font-mono tracking-widest text-[#555555] uppercase">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#00df9a] animate-pulse"></span>
+              Arc Testnet
+            </div>
+            
+            {/* Chain ID Badge */}
+            <div className="hidden sm:flex items-center px-3 py-1.5 border border-[#222222] rounded-full text-[11px] font-mono tracking-widest text-[#555555] uppercase">
+              Chain: 5042002
+            </div>
+
+            <a href="https://faucet.circle.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors ml-2">Faucet</a>
           </div>
         </div>
       </footer>
