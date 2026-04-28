@@ -159,6 +159,14 @@ export default function App() {
           </div>
           
           <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-6 text-xs font-medium text-gray-500 mr-4">
+              <a href="#features" className="hover:text-cyan-400 transition-colors">Features</a>
+              <a href="https://docs.arc.network/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 hover:text-cyan-300 transition-colors">
+                Docs
+                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+              </a>
+            </div>
+
             {walletConnected && (
               <button 
                 onClick={() => setShowQueue(!showQueue)}
@@ -199,7 +207,7 @@ export default function App() {
       </nav>
 
       {/* Main Layout with optional Sidebar */}
-      <div className="max-w-7xl mx-auto pt-24 pb-16 px-6 flex gap-6 relative z-10">
+      <div className="max-w-7xl mx-auto pt-24 pb-16 px-6 flex gap-6 relative z-10 min-h-[85vh]">
         
         {/* Left Side - Main Content */}
         <div className={`flex-1 transition-all duration-300 ${showQueue ? 'md:pr-80' : ''}`}>
@@ -296,7 +304,7 @@ export default function App() {
             {/* Input Area with Suggestions */}
             <div className="p-3 bg-[#050505] border-t border-white/5 z-10 flex flex-col gap-3">
               
-              {/* Quick Prompts (Like Arcway) */}
+              {/* Quick Prompts */}
               {walletConnected && messages.length <= 2 && (
                 <div className="flex gap-2 overflow-x-auto custom-scrollbar pb-1">
                   {suggestions.map((sug, i) => (
@@ -340,7 +348,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Right Side - Intent Queue (Arcway Feature) */}
+        {/* Right Side - Intent Queue Sidebar */}
         {showQueue && (
           <div className="hidden md:block w-80 fixed right-6 top-24 bottom-6 bg-[#050505] border border-white/10 rounded-2xl p-5 shadow-2xl overflow-y-auto custom-scrollbar z-40 animate-in slide-in-from-right-8">
             <div className="flex items-center justify-between mb-6">
@@ -385,8 +393,93 @@ export default function App() {
             )}
           </div>
         )}
-
       </div>
+
+      {/* Floating Stats Bar */}
+      <div className="max-w-4xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-3 relative z-10 mb-20">
+        {[
+          { label: 'Supported Chains', value: '12+' },
+          { label: 'Gas Fees Paid', value: '$0.00' },
+          { label: 'Execution Time', value: '< 3s' },
+          { label: 'Success Rate', value: '99.9%' }
+        ].map((stat, i) => (
+          <div key={i} className="bg-[#050505]/80 backdrop-blur-md border border-white/5 rounded-xl p-5 text-center hover:border-cyan-500/20 transition-colors">
+            <h3 className="text-2xl font-semibold text-white tracking-tight mb-1">{stat.value}</h3>
+            <p className="text-[10px] text-gray-500 uppercase tracking-widest">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Features Grid Section */}
+      <section id="features" className="py-20 px-6 relative z-10 bg-black border-t border-white/5">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
+            <h2 className="text-2xl md:text-3xl font-semibold text-white tracking-tight mb-3">Under the Hood</h2>
+            <p className="text-sm text-gray-500 max-w-lg mx-auto">ArcNexus utilizes the full stack of Arc App Kit to deliver a seamless Web2-like experience.</p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            {/* Feature 1 */}
+            <div className="group bg-[#050505] border border-white/5 rounded-2xl p-6 hover:border-cyan-500/30 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 mb-5 border border-cyan-500/20">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              </div>
+              <h3 className="text-sm font-semibold text-white mb-2">Unified Balance</h3>
+              <p className="text-gray-500 text-xs leading-relaxed">Your USDC is pooled from all connected chains instantly. No more manual bridging or fragmented liquidity.</p>
+            </div>
+
+            {/* Feature 2 */}
+            <div className="group bg-[#050505] border border-white/5 rounded-2xl p-6 hover:border-blue-500/30 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 mb-5 border border-blue-500/20">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+              </div>
+              <h3 className="text-sm font-semibold text-white mb-2">Zero Gas Fees</h3>
+              <p className="text-gray-500 text-xs leading-relaxed">Powered by the Arc Paymaster. Users never have to hold native tokens (ETH, SOL) to pay for transactions.</p>
+            </div>
+
+            {/* Feature 3 */}
+            <div className="group bg-[#050505] border border-white/5 rounded-2xl p-6 hover:border-indigo-500/30 transition-all duration-300 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-b from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 mb-5 border border-indigo-500/20">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              </div>
+              <h3 className="text-sm font-semibold text-white mb-2">AI Intent Execution</h3>
+              <p className="text-gray-500 text-xs leading-relaxed">Integrated with Model Context Protocol (MCP). The agent translates natural language into smart contract calls.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-white/5 bg-black py-8 px-6 relative z-10">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-gray-600 text-xs">
+          
+          <div className="flex flex-col md:flex-row items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-md bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center font-bold text-white text-[10px]">N</div>
+                <span className="text-gray-300 font-semibold text-sm">ArcNexus</span>
+              </div>
+              
+              {/* Live Arc Testnet Badge - Footer */}
+              <div className="flex items-center gap-2 px-2.5 py-1 bg-white/5 border border-white/10 rounded-full cursor-default">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#00ff00] shadow-[0_0_8px_rgba(0,255,0,0.8)]"></div>
+                <span className="text-[10px] text-gray-400 font-medium">Live on Arc testnet</span>
+              </div>
+            </div>
+            <span className="hidden md:block text-gray-600">© 2026. Built with Arc App Kit.</span>
+          </div>
+
+          <div className="flex gap-5">
+            <a href="https://docs.arc.network/" target="_blank" rel="noopener noreferrer" className="hover:text-cyan-400 transition-colors">Arc Docs</a>
+            <a href="https://faucet.circle.com/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400 transition-colors">USDC Faucet</a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">Twitter</a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-gray-300 transition-colors">GitHub</a>
+          </div>
+        </div>
+      </footer>
       
       {/* Scrollbar styling */}
       <style dangerouslySetInnerHTML={{__html: `
