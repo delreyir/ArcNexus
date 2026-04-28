@@ -1,4 +1,4 @@
-cat << 'EOF' > README.md
+
 # 🟢 ArcNexus AI
 
 **Cross-Chain DeFi, Driven by Intents.**
