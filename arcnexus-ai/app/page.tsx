@@ -140,7 +140,7 @@ export default function App() {
       {/* Background Noise/Texture (Subtle) */}
       <div className="fixed inset-0 opacity-[0.02] mix-blend-screen pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
 
-      {/* Top Navbar (CoderCrest Style) */}
+      {/* Top Navbar */}
       <nav className="fixed top-0 w-full z-50 bg-[#000000]/80 backdrop-blur-md border-b border-[#222222]">
         <div className="max-w-[1400px] mx-auto px-6 h-[72px] flex items-center justify-between">
           
@@ -200,54 +200,56 @@ export default function App() {
         </div>
       </nav>
 
-      {/* Hero Section (The Massive Text Style) */}
-      <div className="relative pt-[180px] pb-[100px] px-6 z-10 flex flex-col items-center justify-center min-h-[80vh]">
-        
-        <div className="text-center w-full max-w-[1000px] mx-auto">
-          <h1 className="text-[12vw] sm:text-[9vw] md:text-[7vw] lg:text-[100px] font-medium tracking-[-0.04em] leading-[1.05] mx-auto flex flex-col items-center">
-            <span className="text-[#666666]">The future</span>
-            <span className="text-[#666666]">of decentralized finance</span>
-            <div className="flex items-center justify-center gap-2 md:gap-4 text-white mt-1 flex-wrap">
-              <span className="text-[#888888] font-light">is</span>
-              
-              {/* Fingerprint Icon */}
-              <div className="text-[#00df9a]">
-                <svg className="w-[8vw] h-[8vw] max-w-[70px] max-h-[70px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
-                  <path d="M12 8v4"/>
-                  <path d="M12 16h.01"/>
-                  <path d="M8 12c0-2.2 1.8-4 4-4s4 1.8 4 4"/>
-                  <path d="M6 12c0-3.3 2.7-6 6-6s6 2.7 6 6"/>
-                </svg>
-              </div>
-              
-              <span>intents</span>
-              <span className="text-[#888888] font-light">+</span>
-              
-              {/* Sparkle Icon */}
-              <div className="text-cyan-400">
-                <svg className="w-[7vw] h-[7vw] max-w-[60px] max-h-[60px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M12 3L14.5 9.5L21 12L14.5 14.5L12 21L9.5 14.5L3 12L9.5 9.5L12 3Z" fill="currentColor"/>
-                </svg>
-              </div>
-              
-              <span>AI</span>
-            </div>
-          </h1>
+      {/* Hero Section (Arc Style Typography, Unique Content) */}
+      <div className="relative pt-[160px] pb-[80px] px-6 z-10 flex flex-col justify-center min-h-[70vh] max-w-[1400px] mx-auto">
+        <div className="w-full max-w-[900px]">
           
-          <p className="text-[#888888] text-[15px] md:text-[17px] max-w-[600px] mx-auto mt-10 mb-10 leading-relaxed font-light">
-            We help you abstract away bridges, route liquidity instantly using Unified Balances, and execute gasless transactions to thrive in a cross-chain world.
+          {/* Top Badge (Live Indicator Arc Style) */}
+          <div className="flex items-center gap-3 mb-8 text-[10px] md:text-[11px] font-mono tracking-[0.2em] text-[#666666] uppercase">
+            <span className="w-2 h-2 rounded-full bg-[#00df9a] animate-pulse"></span>
+            Live • Arc Testnet • Chain 5042002
+          </div>
+
+          {/* Headline (Arc Typography: White + Grey, Tight Tracking) */}
+          <h1 className="text-[55px] sm:text-[75px] md:text-[90px] font-semibold tracking-[-0.04em] leading-[1.05] mb-6">
+            <span className="text-white">Cross-chain liquidity</span><br/>
+            <span className="text-[#555555]">prompted into reality.</span>
+          </h1>
+
+          {/* Subtext */}
+          <p className="text-[#888888] text-[16px] md:text-[18px] max-w-[650px] leading-relaxed font-light mb-10">
+            Stop navigating complex bridges. Aggregate your USDC Unified Balance and execute gasless, cross-network operations through a conversational AI agent.
           </p>
 
-          <a href="#console" className="inline-flex items-center justify-center px-8 py-4 rounded-full bg-[#000000] border border-[#00df9a]/40 text-white font-medium text-[15px] shadow-[0_0_20px_rgba(0,223,154,0.15)] hover:shadow-[0_0_30px_rgba(0,223,154,0.3)] hover:border-[#00df9a]/70 transition-all duration-300 group">
-            Launch NanoAI
-            <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-          </a>
+          {/* Actions & Terminal Text */}
+          <div className="flex items-center gap-5 flex-wrap">
+            <button 
+              onClick={() => {
+                document.getElementById('console')?.scrollIntoView({behavior: 'smooth'});
+              }} 
+              className="px-7 py-3.5 rounded-md bg-[#00df9a] text-black font-semibold text-[14px] hover:bg-[#00c285] transition-colors flex items-center gap-2"
+            >
+              Launch NanoAI <span className="font-mono text-[11px]">→</span>
+            </button>
+            
+            <a 
+              href="#features" 
+              className="px-7 py-3.5 rounded-md border border-[#333333] text-white font-medium text-[14px] hover:bg-[#111111] transition-colors"
+            >
+              Explore Protocol
+            </a>
+            
+            {/* Terminal little text */}
+            <div className="hidden sm:flex items-center gap-2 text-[#555555] font-mono text-[10px] tracking-widest uppercase ml-2">
+              ↳ ~ &lt; 3S <span className="text-[#00df9a]">FINALITY</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
       {/* Main App Section (Chat + Queue) */}
-      <div id="console" className="max-w-[1200px] mx-auto px-6 pb-32 flex flex-col xl:flex-row gap-8 relative z-10">
+      <div id="console" className="max-w-[1200px] mx-auto px-6 pb-32 flex flex-col xl:flex-row gap-8 relative z-10 pt-10">
         
         {/* Chat Console (Brutalist/Clean Style) */}
         <div className="flex-1 bg-[#050505] border border-[#222222] rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[600px] relative">
